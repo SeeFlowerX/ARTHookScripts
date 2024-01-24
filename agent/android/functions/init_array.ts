@@ -351,4 +351,4 @@ declare global {
   var init_array_linker: NativePointer[]
 }
 
-globalThis.init_array_linker = InitArray.init_array_linker
+// globalThis.init_array_linker = InitArray.init_array_linker

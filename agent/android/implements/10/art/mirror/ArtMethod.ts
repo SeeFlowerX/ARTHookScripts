@@ -213,11 +213,18 @@ export class ArtMethod extends JSHandle implements IArtMethod, SizeOfClass {
             this.handle))
     }
 
+    // GetCodeItem(): NativePointer {
+    //     const dexCodeItemOffset = this.dex_code_item_offset
+    //     if (dexCodeItemOffset == 0) return ptr(0)
+    //     const dexFile = this.GetDexFile()
+    //     return dexFile.data_begin.add(dexCodeItemOffset)
+    // }
+
+    // Android 12
     GetCodeItem(): NativePointer {
-        const dexCodeItemOffset = this.dex_code_item_offset
-        if (dexCodeItemOffset == 0) return ptr(0)
-        const dexFile = this.GetDexFile()
-        return dexFile.data_begin.add(dexCodeItemOffset)
+        return callSym<NativePointer>("NterpGetCodeItem", "libart.so",
+            'pointer', ['pointer'],
+            this.handle)
     }
 
     GetCodeItemPack(): { headerStart: NativePointer, headerSize: number, insnsStart: NativePointer, insnsSize: number } {
@@ -478,11 +485,11 @@ export class ArtMethod extends JSHandle implements IArtMethod, SizeOfClass {
         const accessor: CodeItemInstructionAccessor = this.DexInstructions()
         const dex_file: DexFile = this.GetDexFile()
         const code_item: NativePointer = this.GetCodeItem()
-        if (!this.jniCode.isNull()) {
-            LOGD(`👉 ${this}`)
-            LOGE(`jniCode is not null -> ${this.jniCode}`)
-            return
-        }
+        // if (!this.jniCode.isNull()) {
+        //     LOGD(`👉 ${this}`)
+        //     LOGE(`jniCode is not null -> ${this.jniCode}`)
+        //     return
+        // }
         if (info) {
             LOGD(`↓dex_file↓\n${dex_file}\n`)
             LOGD(`👉 ${this}\n`)

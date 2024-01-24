@@ -8,10 +8,10 @@ import { DexFile } from "../dexfile/DexFile"
 // class MANAGED DexCache final : public Object {}
 export class DexCache extends ArtObject implements SizeOfClass {
 
-    // HeapReference<String> location_; // 0x4
-    private location_ = this.currentHandle.add(0)
-    // uint32_t num_preresolved_strings_; // 0x4
-    private num_preresolved_strings_ = this.currentHandle.add(0x4)
+    // HeapReference<ClassLoader> class_loader_; // 0x4
+    private class_loader_ = this.currentHandle.add(0)
+    // HeapReference<DexCache> dex_cache_; // 0x4
+    private location_ = this.class_loader_.add(HeapReference.Size)
     // uint64_t dex_file_;                // const DexFile*
     private dex_file_ = this.currentHandle.add(0x4 * 2)
     // uint64_t preresolved_strings_;     // GcRoot<mirror::String*> array with num_preresolved_strings elements.
@@ -26,18 +26,20 @@ export class DexCache extends ArtObject implements SizeOfClass {
     private resolved_types_ = this.currentHandle.add(0x4 * 2 + 0x8 * 5)
     // uint64_t strings_;                 // std::atomic<StringDexCachePair>*, array with num_strings_ elements.
     private strings_ = this.currentHandle.add(0x4 * 2 + 0x8 * 6)
+    // uint32_t num_preresolved_strings_; // 0x4
+    private num_preresolved_strings_ = this.currentHandle.add(0x4 * 2 + 0x8 * 7)
     // uint32_t num_resolved_call_sites_;    // Number of elements in the call_sites_ array.
-    private num_resolved_call_sites_ = this.currentHandle.add(0x4 * 2 + 0x8 * 7)
+    private num_resolved_call_sites_ = this.currentHandle.add(0x4 * 3 + 0x8 * 7)
     // uint32_t num_resolved_fields_;        // Number of elements in the resolved_fields_ array.
-    private num_resolved_fields_ = this.currentHandle.add(0x4 * 3 + 0x8 * 7)
+    private num_resolved_fields_ = this.currentHandle.add(0x4 * 4 + 0x8 * 7)
     // uint32_t num_resolved_method_types_;  // Number of elements in the resolved_method_types_ array.
-    private num_resolved_method_types_ = this.currentHandle.add(0x4 * 4 + 0x8 * 7)
+    private num_resolved_method_types_ = this.currentHandle.add(0x4 * 5 + 0x8 * 7)
     // uint32_t num_resolved_methods_;       // Number of elements in the resolved_methods_ array.
-    private num_resolved_methods_ = this.currentHandle.add(0x4 * 5 + 0x8 * 7)
+    private num_resolved_methods_ = this.currentHandle.add(0x4 * 6 + 0x8 * 7)
     // uint32_t num_resolved_types_;         // Number of elements in the resolved_types_ array.
-    private num_resolved_types_ = this.currentHandle.add(0x4 * 6 + 0x8 * 7)
+    private num_resolved_types_ = this.currentHandle.add(0x4 * 7 + 0x8 * 7)
     // uint32_t num_strings_;                // Number of elements in the strings_ array.
-    private num_strings_ = this.currentHandle.add(0x4 * 7 + 0x8 * 7)
+    private num_strings_ = this.currentHandle.add(0x4 * 8 + 0x8 * 7)
 
     constructor(handle: NativePointer) {
         super(handle)

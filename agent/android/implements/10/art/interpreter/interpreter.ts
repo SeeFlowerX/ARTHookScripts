@@ -30,6 +30,15 @@ export class interpreter extends JSHandleNotImpl {
             }
         })
     }
+    // _ZN3art17CanMethodUseNterpEPNS_9ArtMethodENS_14InstructionSetE
+    public static Hook_CanMethodUseNterp() {
+        const target: NativePointer = getSym("_ZN3art17CanMethodUseNterpEPNS_9ArtMethodENS_14InstructionSetE")
+        Interceptor.attach(target, {
+            onLeave(retval) {
+                retval.replace(interpreter._CanUseMterp ? ptr(0) : NULL)
+            }
+        })
+    }
 
     // _ZN3art11interpreter17AbortTransactionFEPNS_6ThreadEPKcz
     // void AbortTransaction(art::Thread*, char const*, ...)
@@ -63,7 +72,8 @@ export class interpreter extends JSHandleNotImpl {
     // _ZN3art11interpreter22MoveToExceptionHandlerEPNS_6ThreadERNS_11ShadowFrameEPKNS_15instrumentation15InstrumentationE
     // bool MoveToExceptionHandler(art::Thread* self, art::ShadowFrame& shadow_frame, art::instrumentation::Instrumentation const* instrumentation)
     public static Hook_MoveToExceptionHandler() {
-        const target: NativePointer = getSym("_ZN3art11interpreter22MoveToExceptionHandlerEPNS_6ThreadERNS_11ShadowFrameEPKNS_15instrumentation15InstrumentationE")
+        // const target: NativePointer = getSym("_ZN3art11interpreter22MoveToExceptionHandlerEPNS_6ThreadERNS_11ShadowFrameEPKNS_15instrumentation15InstrumentationE")
+        const target: NativePointer = getSym("_ZN3art11interpreter22MoveToExceptionHandlerEPNS_6ThreadERNS_11ShadowFrameEbb")
         const target_SrcCall = new NativeFunction(target, 'pointer', ['pointer', 'pointer', 'pointer'])
         try {
             R(target, new NativeCallback((self: NativePointer, shadow_frame: NativePointer, instrumentation: NativePointer) => {
@@ -104,7 +114,8 @@ setImmediate(() => {
 })
 
 setImmediate(() => {
-    interpreter.Hook_CanUseMterp() // by defult
+    // interpreter.Hook_CanUseMterp() // by defult
+    interpreter.Hook_CanMethodUseNterp() // by defult
     // interpreter.Hook_AbortTransaction()
     // interpreter.Hook_AbortTransactionV()
     interpreter.Hook_MoveToExceptionHandler() // by defult
